@@ -3,6 +3,8 @@
 This is a PoC for Helm v3 (currently using 3.11.1 and kubectl 1.27.1) that shows how Secrets
 aren't updated when entries are removed from them.
 
+Issue opened at: https://github.com/helm/helm/issues/12087
+
 To reproduce, clone this repo, install it in a namespace, check what variables are exposed to
 the pod:
 ```console
@@ -51,17 +53,17 @@ I believe this is due to a special merge that is applied to Secrets, so entries 
 never deleted? I tried the same with a ConfigMap, but that works fine.
 
 ```console
-$ kubectl -n test-secrets-dont-update exec deploy/releasename-hello -- env |grep my
+$ kubectl -n test-secrets-dont-update exec deploy/releasename-hello -- env |grep your
 yourvalue=Hello World
 
 $ vi templates/configmap.yaml  # uncomment 'yourothervar'
 $ helm upgrade --install --namespace test-secrets-dont-update --create-namespace releasename .
-$ kubectl -n test-secrets-dont-update exec deploy/releasename-hello -- env |grep my
+$ kubectl -n test-secrets-dont-update exec deploy/releasename-hello -- env |grep your
 yourothervar=hi again
 yourvalue=Hello World
 
 $ git restore templates/configmap.yaml
 $ helm upgrade --install --namespace test-secrets-dont-update --create-namespace releasename .
-$ kubectl -n test-secrets-dont-update exec deploy/releasename-hello -- env |grep my
+$ kubectl -n test-secrets-dont-update exec deploy/releasename-hello -- env |grep your
 yourvalue=Hello World
 ```
