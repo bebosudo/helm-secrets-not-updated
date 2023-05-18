@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hello-configmap
+data:
+  yourvalue: "Hello World"
+  # Uncomment the following variable to update the deployment.
+  # Then comment it again, and see how the deployment *is* updated, differently from what happens with the similar secret.
+  #yourothervar: "hi again"
